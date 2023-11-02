@@ -1,0 +1,17 @@
+on:
+  fork
+
+
+jobs:
+  automate_invite:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Run the local file
+        uses: ./
+        with:
+          organization: filp-2024
+          allowed-login: little-inferno
+        env:
+          INVITE_TOKEN: ${{ secrets.INVITE_TOKEN }}

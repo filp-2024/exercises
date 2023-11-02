@@ -1,0 +1,50 @@
+{
+  "name": "invite-on-label",
+  "version": "1.0.0",
+  "description": "Automate organization invitation based on the label",
+  "main": "index.js",
+  "scripts": {
+    "build": "export NODE_OPTIONS=--openssl-legacy-provider && ncc build index.js",
+    "prettier": "prettier \"*.{js,json}\"",
+    "format": "npm run prettier -- --write",
+    "lint": "eslint . --ext .js",
+    "lint:fix": "npm run lint -- --fix",
+    "validate": "npm run prettier -- --list-different && npm run lint"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vj-abishek/invite-on-label.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/vj-abishek/invite-on-label/issues"
+  },
+  "homepage": "https://github.com/vj-abishek/invite-on-label#readme",
+  "dependencies": {
+    "@actions/core": "1.10.0",
+    "@actions/github": "5.1.1"
+  },
+  "devDependencies": {
+    "@vercel/ncc": "^0.27.0",
+    "eslint": "^7.17.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-config-prettier": "^7.1.0",
+    "eslint-plugin-import": "^2.22.1",
+    "husky": "^5.0.6",
+    "lint-staged": "^10.5.3",
+    "prettier": "^2.2.1"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.js": [
+      "eslint --fix",
+      "prettier --write"
+    ]
+  }
+}
