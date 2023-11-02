@@ -62,13 +62,14 @@ const core = __nccwpck_require__(105);
 const github = __nccwpck_require__(82);
 
 const main = async () => {
+
   core.info(`Start workflow`);
 
   const {payload} = github.context;
 
-  console.log(payload)
+  core.info(`${payload}`);
 
-  return -1;
+  return core.setFailed('asdasdasd');
 };
 main();
 

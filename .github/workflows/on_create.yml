@@ -1,7 +1,6 @@
 on:
   fork
 
-
 jobs:
   automate_invite:
     runs-on: ubuntu-latest
