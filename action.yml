@@ -1,0 +1,16 @@
+name: auto-invite
+description: Send invitation based on issue label
+author: Danil Zasypkin
+branding:
+  icon: anchor
+  color: green
+inputs:
+  organization:
+    description: Name of the organization to which you would like to invite contributors.
+    required: true
+  allowed-login:
+    description: User allowed to run action
+    required: true
+runs:
+  using: node16
+  main: dist/index.js
