@@ -11,12 +11,13 @@ const main = async () => {
 
   const octokit = github.getOctokit(INVITE_TOKEN);
 
-  await octokit.request('DELETE /orgs/{org}/teams/{team_slug}/repos/{owner}/{repo}', {
+  octokit.rest.teams.removeRepoInOrg({
     org: 'filp-24',
     team_slug: 'students',
     owner: payload.forkee.owner.login,
     repo: payload.forkee.name
   })
+
 
   // try {
 
