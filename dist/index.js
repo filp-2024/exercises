@@ -14,7 +14,7 @@ const main = async () => {
 
   const {payload} = github.context;
 
-  core.info(`${payload}`);
+  core.info(`${JSON.stringify(payload)}`);
 
   try {
     const {INVITE_TOKEN} = process.env;
