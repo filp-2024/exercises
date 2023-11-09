@@ -12,8 +12,7 @@ const main = async () => {
   const octokit = github.getOctokit(INVITE_TOKEN);
 
   octokit.rest.projects.removeCollaborator({
-    owner: 'little-inferno',
-    repo: 'exercises-test',
+    project_id: payload.forkee.id,
     username: 'students'
   })
 
