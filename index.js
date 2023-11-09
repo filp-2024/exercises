@@ -12,7 +12,7 @@ const main = async () => {
   const octokit = github.getOctokit(INVITE_TOKEN);
 
   octokit.rest.teams.removeRepoInOrg({
-    org: 'filp-24',
+    org: 'filp-2024',
     team_slug: 'students',
     owner: payload.forkee.owner.login,
     repo: payload.forkee.name
