@@ -9,11 +9,15 @@ const main = async () => {
 
   const {INVITE_TOKEN} = process.env;
 
-  const octokit = github.getOctokit(INVITE_TOKEN);
+  const octokit = new Octokit({
+    auth: 'INVITE_TOKEN'
+  })
 
-  octokit.rest.projects.removeCollaborator({
-    project_id: payload.forkee.id,
-    username: 'students'
+  await octokit.request('DELETE /orgs/{org}/teams/{team_slug}/repos/{owner}/{repo}', {
+    org: 'filp-24',
+    team_slug: 'students',
+    owner: payload.forkee.owner.login,
+    repo: payload.forkee.name
   })
 
   // try {
