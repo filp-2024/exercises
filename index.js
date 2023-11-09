@@ -9,9 +9,7 @@ const main = async () => {
 
   const {INVITE_TOKEN} = process.env;
 
-  const octokit = new Octokit({
-    auth: 'INVITE_TOKEN'
-  })
+  const octokit = github.getOctokit(INVITE_TOKEN);
 
   await octokit.request('DELETE /orgs/{org}/teams/{team_slug}/repos/{owner}/{repo}', {
     org: 'filp-24',
