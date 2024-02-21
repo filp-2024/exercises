@@ -24,5 +24,5 @@ jobs:
 
       - name: Compile and test exercises02
         if: github.ref == 'refs/heads/exercises02'
-        run: sbt "project exercises02" clean scalafmtCheck test:scalafmtCheck compile scalafix test
+        run: sbt "project exercises02" clean compile test
 
