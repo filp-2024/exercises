@@ -2,7 +2,6 @@ package exercises03
 
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
-import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks
 
 class FunctionsSpec extends AnyFlatSpec with ScalaCheckDrivenPropertyChecks {
@@ -19,8 +18,8 @@ class FunctionsSpec extends AnyFlatSpec with ScalaCheckDrivenPropertyChecks {
   }
 
   it should "andThen" in new Functions {
-    val multiply: Int => Int = _ * 2
-    val natural: Int => Option[Int] = a => if(a >= 0) Some(a) else None
+    val multiply: Int => Int        = _ * 2
+    val natural: Int => Option[Int] = a => if (a >= 0) Some(a) else None
 
     val combined: Int => Option[Int] = andThen(multiply)(natural)
     combined(5) shouldBe Some(10)
@@ -31,7 +30,7 @@ class FunctionsSpec extends AnyFlatSpec with ScalaCheckDrivenPropertyChecks {
 
   it should "combine" in new Functions {
     val writeInt: Int => String = _.toString
-    val doubler: Int => Int = _ * 2
+    val doubler: Int => Int     = _ * 2
 
     val combined: Int => String = compose(writeInt)(doubler)
     combined(5) shouldBe "10"
@@ -43,14 +42,14 @@ class FunctionsSpec extends AnyFlatSpec with ScalaCheckDrivenPropertyChecks {
 
   it should "const" in new Functions {
     val const10: String => Int = const[String, Int](10)
-    forAll {
-      (s: String) => const10(s) shouldBe 10
+    forAll { (s: String) =>
+      const10(s) shouldBe 10
     }
   }
 
   it should "liftOption" in new Functions {
-    forAll {
-      (f: Int => Int, i: Int) => liftOption(f)(i) shouldBe Some(f(i))
+    forAll { (f: Int => Int, i: Int) =>
+      liftOption(f)(i) shouldBe Some(f(i))
     }
   }
 
@@ -73,22 +72,22 @@ class FunctionsSpec extends AnyFlatSpec with ScalaCheckDrivenPropertyChecks {
 
     val chained: Int => Option[Int] = chain(list)
 
-    forAll {
-      (i: Int) => chained(i) shouldBe None
+    forAll { (i: Int) =>
+      chained(i) shouldBe None
     }
   }
 
   it should "zip" in new Functions {
-    forAll {
-      (f1: Int => String, f2: Int => Double, i: Int) => {
+    forAll { (f1: Int => String, f2: Int => Double, i: Int) =>
+      {
         zip(f1, f2)(i) shouldBe (f1(i), f2(i))
       }
     }
   }
 
   it should "unzip" in new Functions {
-    forAll {
-      (func: Int => (String, Double), i: Int) => {
+    forAll { (func: Int => (String, Double), i: Int) =>
+      {
         val (f, g) = unzip(func)
         func(i)._1 shouldBe f(i)
         func(i)._2 shouldBe g(i)

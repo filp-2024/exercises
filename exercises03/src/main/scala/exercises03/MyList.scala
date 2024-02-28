@@ -1,7 +1,5 @@
 package exercises03
 
-import scala.annotation.tailrec
-
 sealed trait MyList[+A]
 
 final case class Cons[A](head: A, tail: MyList[A]) extends MyList[A]
@@ -25,7 +23,7 @@ object MyList {
 
   object Filter {
     sealed trait Filter
-    case object Skip extends Filter
+    case object Skip     extends Filter
     case object Preserve extends Filter
   }
 

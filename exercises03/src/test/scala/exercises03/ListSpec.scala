@@ -31,8 +31,8 @@ class ListSpec extends org.scalatest.wordspec.AnyWordSpec {
 
   "MyList.foldLeft" should {
     "fold sum" in {
-      val list4 = Cons(4, Cons(3, Cons(2, Cons(1, Nil))))
-      val list5 = Cons(5, list4)
+      val list4         = Cons(4, Cons(3, Cons(2, Cons(1, Nil))))
+      val list5         = Cons(5, list4)
       val folding4: Int = MyList.foldLeft(list4)(0)((a, b) => a + b)
       val folding5: Int = MyList.foldLeft(list5)(0)((a, b) => a + b)
 
@@ -41,8 +41,8 @@ class ListSpec extends org.scalatest.wordspec.AnyWordSpec {
     }
 
     "fold minus" in {
-      val list4 = Cons(4, Cons(3, Cons(2, Cons(1, Nil))))
-      val list5 = Cons(5, list4)
+      val list4         = Cons(4, Cons(3, Cons(2, Cons(1, Nil))))
+      val list5         = Cons(5, list4)
       val folding4: Int = MyList.foldLeft(list4)(0)((a, b) => a - b)
       val folding5: Int = MyList.foldLeft(list5)(0)((a, b) => a - b)
 
@@ -93,28 +93,25 @@ class ListSpec extends org.scalatest.wordspec.AnyWordSpec {
     "filter even" in {
       val list = Cons(1, Cons(2, Cons(3, Cons(4, Nil))))
 
-      assert(MyList.filter[Int](
-        list,
-        element => if (element % 2 == 0) MyList.Filter.Preserve else MyList.Filter.Skip) == Cons(2, Cons(4, Nil))
+      assert(
+        MyList
+          .filter[Int](list, element => if (element % 2 == 0) MyList.Filter.Preserve else MyList.Filter.Skip) == Cons(
+          2,
+          Cons(4, Nil)
+        )
       )
     }
 
     "filter drops all" in {
       val list = Cons(1, Cons(2, Cons(3, Cons(4, Nil))))
 
-      assert(MyList.filter[Int](
-        list,
-        _ => MyList.Filter.Skip) == Nil
-      )
+      assert(MyList.filter[Int](list, _ => MyList.Filter.Skip) == Nil)
     }
 
     "filter preserve all" in {
       val list = Cons(1, Cons(2, Cons(3, Cons(4, Nil))))
 
-      assert(MyList.filter[Int](
-        list,
-        _ => MyList.Filter.Preserve) == list
-      )
+      assert(MyList.filter[Int](list, _ => MyList.Filter.Preserve) == list)
     }
 
     "filter nil preserve" in {
