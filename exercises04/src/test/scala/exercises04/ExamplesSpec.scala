@@ -15,7 +15,9 @@ class ExamplesSpec extends AnyWordSpec {
       assert(
         transformToOption(RawUser(Long.MaxValue.toString, banned = "false", "incorrect", Some("Martin"), None, None)).isEmpty
       )
-      assert(transformToOption(RawUser(Long.MaxValue.toString, banned = "false", "incorrect", None, None, None)).isEmpty)
+      assert(
+        transformToOption(RawUser(Long.MaxValue.toString, banned = "false", "incorrect", None, None, None)).isEmpty
+      )
     }
 
     "passport должен быть передан в формате 1234 567890, если не так, то функция должна вернуть None" in {
@@ -36,7 +38,9 @@ class ExamplesSpec extends AnyWordSpec {
 
     "если rawUser.banned, то вернуть None" in {
       assert(
-        transformToOption(RawUser(Long.MaxValue.toString, banned = "true", "incorrect", Some("Martin"), Some("Odersky"), None)).isEmpty
+        transformToOption(
+          RawUser(Long.MaxValue.toString, banned = "true", "incorrect", Some("Martin"), Some("Odersky"), None)
+        ).isEmpty
       )
     }
 
