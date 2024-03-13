@@ -52,8 +52,8 @@ object Example13_Eq extends App {
     }
   }
 
-  val mark = User("Mark", 25)
-  val joe  = User("Joe", 33)
+  val mark: User = User("Mark", 25)
+  val joe: User  = User("Joe", 33)
 
   mark === joe // result: false
 }

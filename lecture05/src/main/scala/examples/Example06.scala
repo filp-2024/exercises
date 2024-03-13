@@ -12,7 +12,7 @@ object Example06 extends App {
     }
   }
 
-  val logger = new Logger()
+  val logger: Logger = new Logger()
 
   def handle(requestContext: RequestContext): Unit = {
     logger.log("Starting process")(requestContext)

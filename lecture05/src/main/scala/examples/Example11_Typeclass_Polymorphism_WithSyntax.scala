@@ -24,7 +24,7 @@ object Example11_Typeclass_Polymorphism_WithSyntax extends App {
   }
 
   // Синтаксис
-  implicit class AreaSyntax[A](val figure: A) extends AnyVal {
+  implicit class AreaSyntax[A](private val figure: A) extends AnyVal {
     def area(implicit area: Area[A]): Double = area.area(figure)
   }
 

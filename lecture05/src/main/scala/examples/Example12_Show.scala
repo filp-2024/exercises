@@ -35,7 +35,7 @@ object Example12_Show extends App {
   import ShowInstances._
   import ShowSyntax._
 
-  val meaningOfLife = 42
+  val meaningOfLife: Int = 42
 
   Show[Int].show(meaningOfLife) // result: "42"
   // or
@@ -49,7 +49,7 @@ object Example12_Show extends App {
     }
   }
 
-  val user = User("Mark", 25)
+  val user: User = User("Mark", 25)
   user.show
   // result: "User(name = Mark, age = 25)"
 }
