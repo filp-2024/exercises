@@ -1,7 +1,7 @@
 package exercises04
 
+import exercises04.either.EitherCombinators._
 import org.scalatest.wordspec.AnyWordSpec
-import either.EitherCombinators._
 
 case class Error(message: String)
 
