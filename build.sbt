@@ -1,3 +1,5 @@
+import sbt.addCompilerPlugin
+
 name := "exercises"
 
 version := "0.1"
@@ -34,5 +36,6 @@ lazy val lecture02 = project in file("lecture02") settings (libraryDependencies 
 lazy val lecture03 = project in file("lecture03") settings (libraryDependencies ++= libraries)
 lazy val lecture04 = project in file("lecture04") settings (libraryDependencies ++= libraries)
 lazy val lecture05 = project in file("lecture05") settings (libraryDependencies ++= libraries)
+lazy val lecture06 = project in file("lecture06") settings (libraryDependencies ++= libraries) settings addCompilerPlugin(kindProjectorDep)
 
 val kindProjectorDep = "org.typelevel" % "kind-projector" % "0.13.2" cross CrossVersion.full
