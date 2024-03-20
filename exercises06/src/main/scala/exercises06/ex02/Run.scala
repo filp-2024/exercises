@@ -23,5 +23,5 @@ object Run extends App {
     )
 
   println(goodBook.transformF[V, AddressBook]) // Valid(AddressBook(1,List(Person(2,ilya,Phone(+79995556677)), Person(3,vasya,Phone(+79994441122)))))
-  println(badBook.transformF[V, AddressBook]) // Invalid(NonEmptyList(InvalidAddressBookId(NaN),List(InvalidPersonId(kek), MissingPersonName, InvalidPhone(lol), InvalidPersonId(cheburek), MissingPersonName, InvalidPhone(123))))
+  println(badBook.transformF[V, AddressBook])  // Invalid(NonEmptyList(InvalidAddressBookId(NaN),List(InvalidPersonId(kek), MissingPersonName, InvalidPhone(lol), InvalidPersonId(cheburek), MissingPersonName, InvalidPhone(123))))
 }
