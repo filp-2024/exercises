@@ -28,15 +28,25 @@ object Example08_ApplicativeError extends App {
   val kaliningrad: Try[Temperature] = getTemperature[Try]("Kaliningrad")
   println(kaliningrad)
 
-  val allCities: Try[(Temperature, Temperature)] = (
+  val allCitiesSuccess: Try[(Temperature, Temperature, Temperature)] = (
     getTemperature[Try]("Moscow"),
-    getTemperature[Try]("Sochi")
-    //getTemperature[Try]("Kaliningrad")
+    getTemperature[Try]("Sochi"),
+    getTemperature[Try]("Yekaterinburg")
   ).mapN {
-    case (msk, sch) => (msk, sch)
+    case (msk, sch, yek) => (msk, sch, yek)
   }
 
-  println(allCities)
+  println(allCitiesSuccess)
+
+  val allCitiesFail: Try[(Temperature, Temperature, Temperature)] = (
+    getTemperature[Try]("Moscow"),
+    getTemperature[Try]("Sochi"),
+    getTemperature[Try]("Kaliningrad")
+  ).mapN {
+    case (msk, sch, k) => (msk, sch, k)
+  }
+
+  println(allCitiesFail)
 
   // Either examples
   type EitherTh[A] = Either[Throwable, A]

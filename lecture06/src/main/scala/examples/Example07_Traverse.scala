@@ -16,7 +16,7 @@ object Example07_Traverse extends App {
     }
   }
 
-  val cities: List[String] = List("Moscow", "Yekaterinburg", "Sochi")
-  val temps: Option[List[Temperature]]  = cities.traverse(city => getTemperature[Option](city))
+  val cities: List[String]             = List("Moscow", "Yekaterinburg", "Sochi")
+  val temps: Option[List[Temperature]] = cities.traverse(city => getTemperature[Option](city))
   println(temps)
 }
