@@ -14,7 +14,7 @@ object ApplicativeError {
 }
 
 object ApplicativeErrorInstances {
-  implicit def tryApplicativeError: ApplicativeError[Try, Throwable] = new ApplicativeError[Try, Throwable] {
+  implicit val tryApplicativeError: ApplicativeError[Try, Throwable] = new ApplicativeError[Try, Throwable] {
 
     override def raiseError[A](e: Throwable): Try[A] = Failure(e)
 

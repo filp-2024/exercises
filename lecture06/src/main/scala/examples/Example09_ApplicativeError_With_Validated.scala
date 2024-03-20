@@ -89,7 +89,7 @@ object Example09_ApplicativeError_With_Validated extends App {
     "22".parse[Int],
     "187.8".parse[Double]
   ).mapN(Person)
-  println(success) // Valid(Person(Ilya, 22, 187.8))
+  println(success) // Valid(Person(Mike, 22, 187.8))
 
   val failed: V[Person] = (
     "Bob".parse[String],

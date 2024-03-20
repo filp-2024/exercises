@@ -50,7 +50,7 @@ object Example03_Functor extends App {
   // Identity
   def identity[A](a: A): A = a
 
-  val fa: List[Int]            = List(1, 2, 3)
+  val fa: List[Int]          = List(1, 2, 3)
   val identity_res1: Boolean = Functor[List].map(fa)(x => x) == fa
   println(identity_res1) // True
   // или
