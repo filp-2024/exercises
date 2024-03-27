@@ -17,4 +17,3 @@ object Reader {
     def pure[A](a: A): Reader[Ctx, A] = Reader(_ => a)
   }
 }
-

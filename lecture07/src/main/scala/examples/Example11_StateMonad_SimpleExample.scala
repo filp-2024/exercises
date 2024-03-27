@@ -6,15 +6,16 @@ import examples.typeclasses.MonadSyntax._
 
 object Example11_StateMonad_SimpleExample extends App {
 
-  def updateStateExample(str: String): State[Int, String] = for {
-    current <- State.ask[Int, Int](identity)
-    _ <- str match {
-      case "increment" => State.update[Int](_ + 1)
-      case "decrement" => State.update[Int](_ - 1)
-      case _ => State.update[Int](identity) // do nothing
-    }
-    updated <- State.ask[Int, Int](identity)
-  } yield if (current != updated) "updated" else "unchanged"
+  def updateStateExample(str: String): State[Int, String] =
+    for {
+      current <- State.ask[Int, Int](identity)
+      _ <- str match {
+        case "increment" => State.update[Int](_ + 1)
+        case "decrement" => State.update[Int](_ - 1)
+        case _           => State.update[Int](identity) // do nothing
+      }
+      updated <- State.ask[Int, Int](identity)
+    } yield if (current != updated) "updated" else "unchanged"
 
   val (res0, state0) = updateStateExample("increment").run(100)
   println(s"res=$res0, state=$state0")

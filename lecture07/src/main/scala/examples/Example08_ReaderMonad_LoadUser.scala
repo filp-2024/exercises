@@ -12,15 +12,15 @@ import scala.util.Try
 │      Configs      │─────────>│     Application    │
 └───────────────────┘          │                    │
                                └────────────────────┘
-*/
+ */
 
 object Example08_ReaderMonad_LoadUser extends App {
 
   final case class HttpClientConfig(url: String, authToken: String)
   final case class DbConfig(url: String, user: String, password: String)
   final case class AppConfig(
-    httpClientConfig: HttpClientConfig,
-    dbConfig: DbConfig
+      httpClientConfig: HttpClientConfig,
+      dbConfig: DbConfig
   )
 
   final case class User(name: Option[String], surname: Option[String])
@@ -37,14 +37,15 @@ object Example08_ReaderMonad_LoadUser extends App {
       Option("result").pure[Try]
     }
 
-    private def loadUserName(id: Long)(config: HttpClientConfig): Try[Option[String]] = for {
-      name <- httpRequest(s"${config.url}/name/$id", config.authToken)
-    } yield name
+    private def loadUserName(id: Long)(config: HttpClientConfig): Try[Option[String]] =
+      for {
+        name <- httpRequest(s"${config.url}/name/$id", config.authToken)
+      } yield name
 
-    private def loadUserSurname(id: Long)(config: DbConfig): Try[Option[String]] = for {
-      surname <- dbQuery(config.url, config.user, config.password)
-    } yield surname
-
+    private def loadUserSurname(id: Long)(config: DbConfig): Try[Option[String]] =
+      for {
+        surname <- dbQuery(config.url, config.user, config.password)
+      } yield surname
 
     def loadUser(id: Long)(config: AppConfig): Try[User] =
       for {
@@ -89,15 +90,17 @@ object Example08_ReaderMonad_LoadUser extends App {
       Option("result").pure[WithConfig]
     }
 
-    private def loadUserName(id: Long): WithConfig[Option[String]] = for {
-      config <- WithConfig.getConfig(_.httpClientConfig)
-      name <- httpRequest(s"${config.url}/name/$id", config.authToken)
-    } yield name
+    private def loadUserName(id: Long): WithConfig[Option[String]] =
+      for {
+        config <- WithConfig.getConfig(_.httpClientConfig)
+        name   <- httpRequest(s"${config.url}/name/$id", config.authToken)
+      } yield name
 
-    private def loadUserSurname(id: Long): WithConfig[Option[String]] = for {
-      config <- WithConfig.getConfig(_.dbConfig)
-      surname <- dbQuery(config.url, config.user, config.password)
-    } yield surname
+    private def loadUserSurname(id: Long): WithConfig[Option[String]] =
+      for {
+        config  <- WithConfig.getConfig(_.dbConfig)
+        surname <- dbQuery(config.url, config.user, config.password)
+      } yield surname
 
     def loadUser(id: Long): WithConfig[User] =
       for {
