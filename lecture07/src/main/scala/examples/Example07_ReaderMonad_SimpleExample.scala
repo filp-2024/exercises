@@ -12,11 +12,12 @@ object Example07_ReaderMonad_SimpleExample extends App {
     "Bob".pure[Reader[Config, *]]
   }
 
-  def getUserName(id: Int): Reader[Config, String] = for {
-    url  <- Reader.ask[Config, String](_.url)
-    name <- httpRequest(s"$url/$id")
-  } yield name
+  def getUserName(id: Int): Reader[Config, String] =
+    for {
+      url  <- Reader.ask[Config, String](_.url)
+      name <- httpRequest(s"$url/$id")
+    } yield name
 
-  val result = getUserName(42).run(Config("http://service.ru/users"))
+  val result: String = getUserName(42).run(Config("http://service.ru/users"))
   println(result)
 }

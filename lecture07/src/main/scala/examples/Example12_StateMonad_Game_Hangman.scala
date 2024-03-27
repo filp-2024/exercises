@@ -17,26 +17,26 @@ object Example12_StateMonad_Game_Hangman extends App {
 
   class Console {
     def print(str: String): WithState[Unit] = println(str).pure[WithState]
-    def getChar: WithState[Char] = Try(StdIn.readChar()).getOrElse(Char.MinValue).pure[WithState]
+    def getChar: WithState[Char]            = Try(StdIn.readChar()).getOrElse(Char.MinValue).pure[WithState]
   }
 
   // Класс описывает состояние игры
   final case class GameState(
-    guesses: Set[Char],
-    word: String
+      guesses: Set[Char],
+      word: String
   ) {
-    val maxFailures: Int = (word.toSet.size * 1.5).toInt
-    def failures: Int = (guesses -- word.toSet).size
-    def playerLost: Boolean = failures >= maxFailures
-    def playerWon: Boolean = (word.toSet -- guesses).isEmpty
+    val maxFailures: Int               = (word.toSet.size * 1.5).toInt
+    def failures: Int                  = (guesses -- word.toSet).size
+    def playerLost: Boolean            = failures >= maxFailures
+    def playerWon: Boolean             = (word.toSet -- guesses).isEmpty
     def addChar(char: Char): GameState = copy(guesses = guesses + char)
   }
 
   sealed trait GuessResult
   object GuessResult {
-    case object Won extends GuessResult
-    case object Lost extends GuessResult
-    case object Correct extends GuessResult
+    case object Won       extends GuessResult
+    case object Lost      extends GuessResult
+    case object Correct   extends GuessResult
     case object Incorrect extends GuessResult
     case object Unchanged extends GuessResult
   }
@@ -57,31 +57,33 @@ object Example12_StateMonad_Game_Hangman extends App {
       else GuessResult.Incorrect
     }
 
-    private def getCurrentGameState: WithState[GameState] = State.ask[GameState, GameState](identity)
+    private def getCurrentGameState: WithState[GameState]             = State.ask[GameState, GameState](identity)
     private def updateGameState(newState: GameState): WithState[Unit] = State.update[GameState](_ => newState)
 
-    private def gameLoop: WithState[Unit] = for {
-      _ <- console.print(s"Guess a letter:")
-      choice <- console.getChar.map(_.toLower)
-      currentState <- getCurrentGameState
-      newState = currentState.addChar(choice)
-      _ <- updateGameState(newState)
-      _ <- render(newState)
-      guessResult = analyzeNewInput(currentState, newState, choice)
-      _ <- guessResult match {
-        case GuessResult.Won => console.print(s"You won!")
-        case GuessResult.Lost => console.print(s"You lost!")
-        case _ => gameLoop
-      }
-    } yield ()
+    private def gameLoop: WithState[Unit] =
+      for {
+        _            <- console.print(s"Guess a letter:")
+        choice       <- console.getChar.map(_.toLower)
+        currentState <- getCurrentGameState
+        newState = currentState.addChar(choice)
+        _ <- updateGameState(newState)
+        _ <- render(newState)
+        guessResult = analyzeNewInput(currentState, newState, choice)
+        _ <- guessResult match {
+          case GuessResult.Won  => console.print(s"You won!")
+          case GuessResult.Lost => console.print(s"You lost!")
+          case _                => gameLoop
+        }
+      } yield ()
 
-    def startGame(): WithState[Unit] = for {
-      _ <- console.print("-- New game! --")
-      _ <- gameLoop
-    } yield ()
+    def startGame(): WithState[Unit] =
+      for {
+        _ <- console.print("-- New game! --")
+        _ <- gameLoop
+      } yield ()
   }
 
-  val hangman = new Hangman(new Console)
+  val hangman: Hangman = new Hangman(new Console)
 
   // Запуск игра с дефолтным стейтом
   hangman.startGame().run(GameState(Set(), "word"))

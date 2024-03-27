@@ -43,7 +43,6 @@ object Example06_LoadUserMonadError extends App {
       }
   }
 
-
   println(Service.loadUser[Either[Throwable, *]]("123"))
   println(Service.loadUser[Either[Throwable, *]]("456"))
   println(Service.loadUser[Either[Throwable, *]]("657"))
@@ -55,9 +54,9 @@ object Example06_LoadUserMonadError extends App {
   println(Service.loadUser[Try]("657"))
 
   // Пример обработки ошибки
-  Service.loadUser[Try]("657").handleErrorWith[Throwable] {
-    error =>
-      println(s"Loading user failed with error: $error").pure[Try]
-        .flatMap(_ => MonadThrow[Try].raiseError(new Exception("Boom!")))
+  Service.loadUser[Try]("657").handleErrorWith[Throwable] { error =>
+    println(s"Loading user failed with error: $error")
+      .pure[Try]
+      .flatMap(_ => MonadThrow[Try].raiseError(new Exception("Boom!")))
   }
 }

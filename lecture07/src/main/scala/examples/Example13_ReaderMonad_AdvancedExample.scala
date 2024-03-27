@@ -27,7 +27,7 @@ import scala.util.Random
 │                    │
 │  logger.log(...)   │
 └────────────────────┘
-*/
+ */
 
 object Example13_ReaderMonad_AdvancedExample extends App {
 
@@ -52,38 +52,40 @@ object Example13_ReaderMonad_AdvancedExample extends App {
 
     // Слой доступа к данным
     class UsersRepo(logger: Logger) {
-      def getUsers: WithContext[List[User]] = for {
-        users <- List(User()).pure[WithContext]
-        _     <- logger.log("Get users from data layer")
-      } yield users
+      def getUsers: WithContext[List[User]] =
+        for {
+          users <- List(User()).pure[WithContext]
+          _     <- logger.log("Get users from data layer")
+        } yield users
     }
 
     // Сервисный слой (с бизнес логикой приложения)
     class UsersService(repo: UsersRepo, logger: Logger) {
-      def getUsers: WithContext[List[User]] = for {
-        users <- repo.getUsers
-        _     <- logger.log("Get users from service layer")
-      } yield users
+      def getUsers: WithContext[List[User]] =
+        for {
+          users <- repo.getUsers
+          _     <- logger.log("Get users from service layer")
+        } yield users
     }
 
     // Слой контроллеров (http-роутов)
     class UsersController(service: UsersService, logger: Logger) {
-      def handle(): WithContext[List[User]] = for {
-        users <- service.getUsers
-        _     <- logger.log("Get users from controller")
-      } yield users
+      def handle(): WithContext[List[User]] =
+        for {
+          users <- service.getUsers
+          _     <- logger.log("Get users from controller")
+        } yield users
     }
   }
 
   import BackendApplication._
 
-  val logger: Logger = new Logger
+  val logger: Logger                         = new Logger
   val requestIdGenerator: RequestIdGenerator = new RequestIdGenerator
 
-  val repo: UsersRepo = new UsersRepo(logger)
-  val service: UsersService = new UsersService(repo, logger)
+  val repo: UsersRepo             = new UsersRepo(logger)
+  val service: UsersService       = new UsersService(repo, logger)
   val controller: UsersController = new UsersController(service, logger)
-
 
   // Представим, что клиенты делают запросы
   // Для каждого запроса генерируется уникальный requestId,
