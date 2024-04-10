@@ -76,18 +76,22 @@ class RunECSpec extends AnyFlatSpec {
   "RunEC" should "runReturn" in new mock {
     val randomInt                                 = Random.nextInt()
     val result: AtomicReference[Option[Try[Int]]] = new AtomicReference(None)
-    new Thread(
-      () => {
-        val r = RunEC.runReturn[Int](
-          {
-            counter.incrementAndGet()
+    val t = new Thread(
+      () =>
+        try {
+          val r = RunEC.runReturn[Int](
+            {
+              counter.incrementAndGet()
 
-            randomInt
-          }
-        )(mockEC)
-        result.set(Some(r))
-      }
-    ).start()
+              randomInt
+            }
+          )(mockEC)
+          result.set(Some(r))
+        } catch {
+          case e: InterruptedException => ()
+        }
+    )
+    t.start()
 
     Thread.sleep(1000)
 
@@ -99,23 +103,28 @@ class RunECSpec extends AnyFlatSpec {
     assert(counter.get() == 1)
     Thread.sleep(1000)
     assert(result.get().contains(Success(randomInt)))
+    t.interrupt()
   }
 
   "RunEC" should "runReturn fail" in new mock {
     val randomMessage                             = Random.alphanumeric.take(10).mkString
     val result: AtomicReference[Option[Try[Int]]] = new AtomicReference(None)
-    new Thread(
-      () => {
-        val r = RunEC.runReturn[Int](
-          {
-            counter.incrementAndGet()
+    val t = new Thread(
+      () =>
+        try {
+          val r = RunEC.runReturn[Int](
+            {
+              counter.incrementAndGet()
 
-            throw new RuntimeException(randomMessage)
-          }
-        )(mockEC)
-        result.set(Some(r))
-      }
-    ).start()
+              throw new RuntimeException(randomMessage)
+            }
+          )(mockEC)
+          result.set(Some(r))
+        } catch {
+          case e: InterruptedException => ()
+        }
+    )
+    t.start()
 
     Thread.sleep(1000)
 
@@ -127,5 +136,6 @@ class RunECSpec extends AnyFlatSpec {
     assert(counter.get() == 1)
     Thread.sleep(1000)
     assert(result.get().exists(_.toEither.swap.exists(_.getMessage == randomMessage)))
+    t.interrupt()
   }
 }
