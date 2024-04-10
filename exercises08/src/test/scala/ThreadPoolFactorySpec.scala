@@ -14,7 +14,7 @@ import scala.concurrent.duration.{DurationInt, FiniteDuration}
 class ThreadPoolFactorySpec extends AnyFlatSpec {
 
   trait scenario {
-    def inf: FiniteDuration = FiniteDuration.apply(100, TimeUnit.DAYS)
+    def inf: FiniteDuration    = FiniteDuration.apply(100, TimeUnit.DAYS)
     val atomicLong: AtomicLong = new AtomicLong(0)
     def task: Runnable = new Runnable {
       override def run(): Unit = atomicLong.incrementAndGet()
@@ -67,9 +67,7 @@ class ThreadPoolFactorySpec extends AnyFlatSpec {
   "ThreadPool" should "work with single thread" in new scenarioFixed {
 
     override def threads: Int = 1
-    List.range(0, 100).foreach(
-      i => tPool.execute(task)
-    )
+    List.range(0, 100).foreach(i => tPool.execute(task))
     Thread.sleep(75)
     threadsArray.size shouldBe 1
     atomicLong.get() shouldBe 100
@@ -79,9 +77,7 @@ class ThreadPoolFactorySpec extends AnyFlatSpec {
   "ThreadPool" should "work with 7 thread" in new scenarioFixed {
 
     override def threads: Int = 7
-    List.range(0, 100).foreach(
-      i => tPool.execute(task)
-    )
+    List.range(0, 100).foreach(i => tPool.execute(task))
     Thread.sleep(75)
     threadsArray.size shouldBe 7
     atomicLong.get() shouldBe 100
@@ -91,9 +87,7 @@ class ThreadPoolFactorySpec extends AnyFlatSpec {
   "ThreadPool" should "work concurrent with 10 thread" in new scenarioFixed {
 
     override def threads: Int = 10
-    List.range(0, 100).foreach(
-      i => tPool.execute(taskDelayed)
-    )
+    List.range(0, 100).foreach(i => tPool.execute(taskDelayed))
     Thread.sleep(3000)
     threadsArray.size shouldBe 10
     atomicLong.get() shouldBe 100
@@ -103,9 +97,7 @@ class ThreadPoolFactorySpec extends AnyFlatSpec {
   "ThreadPool" should "don't work concurrent with 1 thread" in new scenarioFixed {
 
     override def threads: Int = 1
-    List.range(0, 100).foreach(
-      i => tPool.execute(taskDelayed)
-    )
+    List.range(0, 100).foreach(i => tPool.execute(taskDelayed))
     Thread.sleep(600)
     threadsArray.size shouldBe 1
     assert(atomicLong.get() < 70)
@@ -121,9 +113,7 @@ class ThreadPoolFactorySpec extends AnyFlatSpec {
 
     override def ttl: FiniteDuration = inf
 
-    List.range(0, 1000).foreach(
-      i => tPool.execute(taskDelayed)
-    )
+    List.range(0, 1000).foreach(i => tPool.execute(taskDelayed))
     Thread.sleep(3000)
     threadsArray.size shouldBe 10
     assert(atomicLong.get() > 100)
@@ -137,9 +127,7 @@ class ThreadPoolFactorySpec extends AnyFlatSpec {
 
     override def ttl: FiniteDuration = 0.seconds
 
-    List.range(0, 500).foreach(
-      i => tPool.execute(taskDelayed)
-    )
+    List.range(0, 500).foreach(i => tPool.execute(taskDelayed))
     Thread.sleep(3000)
     threadsArray.count(_.getState == State.TERMINATED) == 10
     assert(atomicLong.get() > 100)
@@ -153,15 +141,11 @@ class ThreadPoolFactorySpec extends AnyFlatSpec {
 
     override def ttl: FiniteDuration = 0.seconds
 
-    List.range(0, 200).foreach(
-      i => tPool.execute(taskDelayed)
-    )
+    List.range(0, 200).foreach(i => tPool.execute(taskDelayed))
     Thread.sleep(3000)
     assert(threadsArray.count(_.getState == State.TERMINATED) == 3)
 
-    List.range(0, 200).foreach(
-      i => tPool.execute(taskDelayed)
-    )
+    List.range(0, 200).foreach(i => tPool.execute(taskDelayed))
     Thread.sleep(3000)
     assert(threadsArray.count(_.getState == State.TERMINATED) == 6)
     tPool.close()
