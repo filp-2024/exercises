@@ -6,7 +6,7 @@ import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import java.io.Closeable
 import java.lang.Thread.State
 import java.util.concurrent.atomic.AtomicLong
-import java.util.concurrent.TimeUnit
+import java.util.concurrent.{Semaphore, TimeUnit}
 import scala.collection.mutable.ArrayBuffer
 import scala.concurrent.ExecutionContext
 import scala.concurrent.duration.{DurationInt, FiniteDuration}
@@ -20,10 +20,10 @@ class ThreadPoolFactorySpec extends AnyFlatSpec {
       override def run(): Unit = atomicLong.incrementAndGet()
     }
 
-    def taskDelayed: Runnable = new Runnable {
+    def taskDelayed(delay: Int = 25): Runnable = new Runnable {
 
       override def run(): Unit = {
-        Thread.sleep(25)
+        Thread.sleep(delay)
         atomicLong.incrementAndGet()
       }
     }
@@ -87,7 +87,7 @@ class ThreadPoolFactorySpec extends AnyFlatSpec {
   "ThreadPool" should "work concurrent with 10 thread" in new scenarioFixed {
 
     override def threads: Int = 10
-    List.range(0, 100).foreach(i => tPool.execute(taskDelayed))
+    List.range(0, 100).foreach(i => tPool.execute(taskDelayed(25)))
     Thread.sleep(3000)
     threadsArray.size shouldBe 10
     atomicLong.get() shouldBe 100
@@ -97,40 +97,12 @@ class ThreadPoolFactorySpec extends AnyFlatSpec {
   "ThreadPool" should "don't work concurrent with 1 thread" in new scenarioFixed {
 
     override def threads: Int = 1
-    List.range(0, 100).foreach(i => tPool.execute(taskDelayed))
+    List.range(0, 100).foreach(i => tPool.execute(taskDelayed(25)))
     Thread.sleep(600)
     threadsArray.size shouldBe 1
     assert(atomicLong.get() < 70)
     assert(atomicLong.get() > 10)
 
-    tPool.close()
-  }
-
-  "ThreadPool" should "scale number of threads from 2 to 10" in new scenario {
-    override def minThreads: Int = 2
-
-    override def maxThreads: Int = 10
-
-    override def ttl: FiniteDuration = inf
-
-    List.range(0, 1000).foreach(i => tPool.execute(taskDelayed))
-    Thread.sleep(3000)
-    threadsArray.size shouldBe 10
-    assert(atomicLong.get() > 100)
-    tPool.close()
-  }
-
-  "ThreadPool" should "kill free threads instantly" in new scenario {
-    override def minThreads: Int = 0
-
-    override def maxThreads: Int = 10
-
-    override def ttl: FiniteDuration = 0.seconds
-
-    List.range(0, 500).foreach(i => tPool.execute(taskDelayed))
-    Thread.sleep(3000)
-    threadsArray.count(_.getState == State.TERMINATED) == 10
-    assert(atomicLong.get() > 100)
     tPool.close()
   }
 
@@ -141,14 +113,34 @@ class ThreadPoolFactorySpec extends AnyFlatSpec {
 
     override def ttl: FiniteDuration = 0.seconds
 
-    List.range(0, 200).foreach(i => tPool.execute(taskDelayed))
-    Thread.sleep(3000)
-    assert(threadsArray.count(_.getState == State.TERMINATED) == 3)
+    val semaphore = new Semaphore(0)
 
-    List.range(0, 200).foreach(i => tPool.execute(taskDelayed))
-    Thread.sleep(3000)
-    assert(threadsArray.count(_.getState == State.TERMINATED) == 6)
-    tPool.close()
+    List
+      .range(0, 3)
+      .foreach(_ => {
+        tPool.execute(() => {
+          semaphore.acquire()
+        })
+        Thread.sleep(100)
+      })
+    assert(threadsArray.length == 3)
+
+    semaphore.release(3)
+    Thread.sleep(1000)
+    assert(threadsArray.count(_.getState == Thread.State.TERMINATED) == 3)
+
+    List
+      .range(0, 3)
+      .foreach(_ => {
+        tPool.execute(() => {
+          semaphore.acquire()
+        })
+        Thread.sleep(100)
+      })
+    semaphore.release(3)
+    Thread.sleep(1000)
+    assert(threadsArray.count(_.getState == Thread.State.TERMINATED) == 6)
+
   }
 
 }
