@@ -10,9 +10,9 @@ class RunECSpec extends AnyFlatSpec {
   trait mock {
     val taskArray = new ArrayBuffer[Runnable]()
 
-    val counter: AtomicInteger = new AtomicInteger(0)
+    val counter: AtomicInteger                     = new AtomicInteger(0)
     val errRef: AtomicReference[Option[Throwable]] = new AtomicReference[Option[Throwable]](None)
-    val sucRef: AtomicReference[Option[Int]] = new AtomicReference[Option[Int]](None)
+    val sucRef: AtomicReference[Option[Int]]       = new AtomicReference[Option[Int]](None)
 
     val mockEC: ExecutionContext = new ExecutionContext {
       override def execute(runnable: Runnable): Unit = {
@@ -30,7 +30,7 @@ class RunECSpec extends AnyFlatSpec {
         randomInt
       }
     ) {
-      case Failure(e) => errRef.set(Some(e))
+      case Failure(e)     => errRef.set(Some(e))
       case Success(value) => sucRef.set(Some(value))
     }(mockEC)
 
@@ -40,7 +40,7 @@ class RunECSpec extends AnyFlatSpec {
 
     taskArray.toList match {
       case head :: Nil => head.run()
-      case _ => fail("Число переданных в ExecutionContext задач не равно 1")
+      case _           => fail("Число переданных в ExecutionContext задач не равно 1")
     }
 
     assert(counter.get() == 1)
@@ -55,7 +55,7 @@ class RunECSpec extends AnyFlatSpec {
         throw new RuntimeException(randomMessage)
       }
     ) {
-      case Failure(e) => errRef.set(Some(e))
+      case Failure(e)     => errRef.set(Some(e))
       case Success(value) => sucRef.set(Some(value))
     }(mockEC)
 
@@ -65,7 +65,7 @@ class RunECSpec extends AnyFlatSpec {
 
     taskArray.toList match {
       case head :: Nil => head.run()
-      case _ => fail("Число переданных в ExecutionContext задач не равно 1")
+      case _           => fail("Число переданных в ExecutionContext задач не равно 1")
     }
 
     assert(counter.get() == 0)
@@ -73,8 +73,8 @@ class RunECSpec extends AnyFlatSpec {
     assert(sucRef.get().isEmpty)
   }
 
-  "RunEC" should "runReturn"  in new mock {
-    val randomInt = Random.nextInt()
+  "RunEC" should "runReturn" in new mock {
+    val randomInt                                 = Random.nextInt()
     val result: AtomicReference[Option[Try[Int]]] = new AtomicReference(None)
     new Thread(
       () => {
@@ -94,15 +94,15 @@ class RunECSpec extends AnyFlatSpec {
     assert(counter.get() == 0)
     taskArray.toList match {
       case head :: Nil => head.run()
-      case _ => fail("Число переданных в ExecutionContext задач не равно 1")
+      case _           => fail("Число переданных в ExecutionContext задач не равно 1")
     }
     assert(counter.get() == 1)
     Thread.sleep(1000)
     assert(result.get().contains(Success(randomInt)))
   }
 
-  "RunEC" should "runReturn fail"  in new mock {
-    val randomMessage = Random.alphanumeric.take(10).mkString
+  "RunEC" should "runReturn fail" in new mock {
+    val randomMessage                             = Random.alphanumeric.take(10).mkString
     val result: AtomicReference[Option[Try[Int]]] = new AtomicReference(None)
     new Thread(
       () => {
@@ -122,7 +122,7 @@ class RunECSpec extends AnyFlatSpec {
     assert(counter.get() == 0)
     taskArray.toList match {
       case head :: Nil => head.run()
-      case _ => fail("Число переданных в ExecutionContext задач не равно 1")
+      case _           => fail("Число переданных в ExecutionContext задач не равно 1")
     }
     assert(counter.get() == 1)
     Thread.sleep(1000)
