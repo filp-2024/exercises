@@ -65,5 +65,6 @@ lazy val lecture06 = project in file("lecture06") settings (libraryDependencies 
 lazy val lecture07 = project in file("lecture07") settings (libraryDependencies ++= libraries) settings addCompilerPlugin(kindProjectorDep)
 lazy val lecture08 = project in file("lecture08") settings (libraryDependencies ++= libraries) settings addCompilerPlugin(kindProjectorDep)
 lazy val lecture09 = project in file("lecture09") settings (libraryDependencies ++= libraries) settings addCompilerPlugin(kindProjectorDep)
+lazy val lecture10 = project in file("lecture10") settings (libraryDependencies ++= libraries) settings addCompilerPlugin(kindProjectorDep)
 
 lazy val kindProjectorDep = "org.typelevel" % "kind-projector" % "0.13.2" cross CrossVersion.full
